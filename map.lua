@@ -1,7 +1,9 @@
+local rect_mod = require('rect')
+local vec_mod = require('vec')
+
 return {
 	load_map = function(filename)
-		local function pixel_to_tile(pixel)
-			local r, g, b, a = pixel
+		local function pixel_to_tile(r, g, b, a)
 			return { r = r, g = g, b = b }
 		end
 		local map = {}
@@ -23,9 +25,14 @@ return {
 		end
 
 		function map:render()
-			for x=0, map:width()  do
-				for y=0, map:height()  do
-					love.graphics.rectangle("fill", 1, 1, 10, 10)
+			for x = 1, map:width()  do
+				for y = 1, map:height()  do
+					local tile = self[x][y]
+					local world_rect = rect_mod.by_left_top_and_size(vec_mod(x, y), vec_mod(1, 1))
+					local screen_rect = cam:world_to_screen_rect(world_rect)
+					-- print("screen_rect_left=" .. screen_rect:left())
+					love.graphics.setColor(tile.r, tile.g, tile.b)
+					love.graphics.rectangle("fill", screen_rect:left(), screen_rect:top(), screen_rect:width(), screen_rect:height())
 				end
 			end
 		end
