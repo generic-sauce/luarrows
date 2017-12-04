@@ -12,6 +12,12 @@ return {
 			return self.viewport_rect
 		end
 
+		function cam:draw_world_rect(world_rect, r, g, b)
+			local screen_rect = cam:world_to_screen_rect(world_rect)
+			love.graphics.setColor(r, g, b)
+			love.graphics.rectangle("fill", screen_rect:left(), screen_rect:top(), screen_rect:width(), screen_rect:height())
+		end
+
 		function cam:world_to_screen_vec(vec)
 			return (vec - self:viewport():left_top()) * cam.zoom
 		end
