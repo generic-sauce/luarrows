@@ -11,6 +11,9 @@ function love.load()
 end
 
 function love.update(dt)
+	for _, entity in pairs(entities) do
+		entity:update(dt)
+	end
 end
 
 function love.draw()
