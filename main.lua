@@ -14,8 +14,8 @@ function love.update(dt)
 end
 
 function love.draw()
+	map:render()
 	for _, entity in pairs(entities) do
 		entity:render()
 	end
-	map:render()
 end
