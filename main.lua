@@ -8,7 +8,7 @@ function love.load()
 
 	world = love.physics.newWorld(0, 80, true)
 
-	entities = { player_mod.new() }
+	entities = { player_mod.new("archer") }
 	map = map_mod.load_map('map.jpg')
 end
 

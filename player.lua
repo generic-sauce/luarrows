@@ -1,7 +1,7 @@
 GROUND_CONTACT_THRESHOLD = 3
 
 return {
-	new = function()
+	new = function(character_type)
 		local player = {}
 		player.body = love.physics.newBody(world, 0, 0, "dynamic")
 		player.shape = love.physics.newRectangleShape(TILESIZE * 2/3, TILESIZE * 2/3)
@@ -9,6 +9,8 @@ return {
 
 		player.body:setPosition(0, 0)
 		player.body:setFixedRotation(true)
+
+		function player:update_character(dt) --[[ stub ]] end
 
 		function player:update(dt)
 			if love.keyboard.isDown("w") and self:touchesGround() then
@@ -22,6 +24,7 @@ return {
 				self.body:applyForce(400, 0)
 			end
 
+			player:update_character(dt)
 		end
 
 		function player:touchesGround()
@@ -55,6 +58,6 @@ return {
 			love.graphics.polygon("fill", self.body:getWorldPoints(self.shape:getPoints()))
 		end
 
-		return player
+		return require('characters/' .. character_type).new(player)
 	end
 }
