@@ -1,3 +1,5 @@
+-- TODO needed?
+
 function vec_mod(x, y) 
 	local meta = {}
 	function meta:__index(i)

@@ -1,10 +1,13 @@
-local rect_mod = require('rect')
-local vec_mod = require('vec')
-
 return {
 	load_map = function(filename)
 		local function pixel_to_tile(r, g, b, a)
-			return { r = r, g = g, b = b }
+			if r == 255 and g == 255 and b == 255 then
+				return { r = r, g = g, b = b, tile_type = "void" }
+			elseif r == 0 and g == 0 and b == 0 then
+				return { r = r, g = g, b = b, tile_type = "normal" }
+			else
+				return { r = 255, g = 0, b = 255, tile_type = "unknown" }
+			end
 		end
 		local map = {}
 
@@ -12,7 +15,16 @@ return {
 		for x = 0, image_data:getWidth() -1 do
 			map[x] = {}
 			for y = 0, image_data:getHeight() -1 do
-				map[x][y] = pixel_to_tile(image_data:getPixel(x,y))
+				local tile = pixel_to_tile(image_data:getPixel(x,y))
+				map[x][y] = tile
+
+				tile.body = love.physics.newBody(world, x * TILESIZE, y * TILESIZE)
+				tile.shape = love.physics.newRectangleShape(TILESIZE, TILESIZE)
+				tile.fixture = love.physics.newFixture(tile.body, tile.shape);
+
+				if tile.tile_type == "void" or tile.tile_type == "unknown" then
+					tile.body:setActive(false)
+				end
 			end
 		end
 
@@ -28,8 +40,8 @@ return {
 			for x = 0, map:width() -1 do
 				for y = 0, map:height() -1 do
 					local tile = self[x][y]
-					local world_rect = rect_mod.by_left_top_and_size(vec_mod(x, y), vec_mod(1, 1))
-					cam:draw_world_rect(world_rect, tile.r, tile.g, tile.b)
+					love.graphics.setColor(tile.r, tile.g, tile.b)
+					love.graphics.polygon("fill", tile.body:getWorldPoints(tile.shape:getPoints()))
 				end
 			end
 		end

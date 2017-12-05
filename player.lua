@@ -1,25 +1,30 @@
-local vec_mod = require('vec')
-local rect_mod = require('rect')
-
 return {
 	new = function()
 		local player = {}
-		player.pos = vec_mod(0, 0)
-		player.speed = vec_mod(0, 0)
+		player.body = love.physics.newBody(world, 0, 0, "dynamic")
+		player.shape = love.physics.newRectangleShape(TILESIZE * 2/3, TILESIZE * 2/3)
+		player.fixture = love.physics.newFixture(player.body, player.shape)
+
+		player.body:setPosition(650/2, 650/2)
+		player.body:setFixedRotation(true)
 
 		function player:update(dt)
-			if love.keyboard.isDown('d') then
-				self.speed.x = self.speed.x + 40 * dt;
-			elseif love.keyboard.isDown('a') then
-				self.speed.x = self.speed.x - 40 * dt;
+			if love.keyboard.isDown("w") then
+				self.body:applyForce(0, -400)
 			end
-
-			self.pos = self.pos + self.speed * dt;
+			if love.keyboard.isDown("a") then
+				self.body:applyForce(-400, 0)
+			end
+			if love.keyboard.isDown("d") then
+				self.body:applyForce(400, 0)
+			end
 		end
 
 		function player:render()
-			cam:draw_world_rect(rect_mod.by_left_top_and_size(self.pos, vec_mod(1, 1)), 0, 255, 0)
+			love.graphics.setColor(0, 255, 0)
+			love.graphics.polygon("fill", self.body:getWorldPoints(self.shape:getPoints()))
 		end
+
 		return player
 	end
 }
